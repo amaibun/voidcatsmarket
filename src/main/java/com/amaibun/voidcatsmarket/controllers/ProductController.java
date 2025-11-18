@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.amaibun.voidcatsmarket.models.Product;
+import com.amaibun.voidcatsmarket.dtos.ProductDTO;
 import com.amaibun.voidcatsmarket.services.ProductService;
 
 
@@ -23,27 +23,27 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping
-    public List<Product> getAllProducts() {
+    public List<ProductDTO> getAllProducts() {
         return productService.getAllProducts();
     }
 
     @GetMapping("/{productId}")
-    public Product getProductById(@PathVariable String productId) {
+    public ProductDTO getProductById(@PathVariable Long productId) {
         return productService.getProduct(productId);
     }
 
     @PostMapping
-    public Product createProduct(@RequestBody Product product) {
+    public ProductDTO createProduct(@RequestBody ProductDTO product) {
         return productService.createProduct(product);
     }
 
     @PutMapping("/{productId}")
-    public Product updateProduct(@PathVariable String productId, @RequestBody Product product) {
+    public ProductDTO updateProduct(@PathVariable Long productId, @RequestBody ProductDTO product) {
         return productService.updateProduct(productId, product);
     }
 
     @DeleteMapping("/{productId}")
-    public void deleteProduct(@PathVariable String productId) {
+    public void deleteProduct(@PathVariable Long productId) {
         productService.deleteProduct(productId);
     }
 }
