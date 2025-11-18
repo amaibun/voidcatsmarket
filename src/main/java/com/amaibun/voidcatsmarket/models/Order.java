@@ -1,5 +1,7 @@
 package com.amaibun.voidcatsmarket.models;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,43 +10,33 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Entity
-@Table(name="products")
-public class Product {
+@Table(name="orders")
+public class Order {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="product_id")
-    private Long productId;
+    @Column(name="order_id")
+    private Long orderId;
 
     @NotNull
-    @Size(min=2, max=256)
-    private String title;
-
-    @NotNull
-    @Size(min=2, max=512)
-    private String description;
-
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="category_id")
-    private Category category;
+    @JoinColumn(name="customer_id")
+    private Customer customer;
 
     @NotNull
-    private double price;
+    @OneToMany(mappedBy="order", orphanRemoval=true)
+    private List<OrderItem> items;
 
     @NotNull
-    private String currency;
-
-    private int stock;
-
-    private String manufacturer;
+    private String status = "pending";
 }

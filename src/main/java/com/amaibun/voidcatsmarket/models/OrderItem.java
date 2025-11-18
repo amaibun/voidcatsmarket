@@ -8,43 +8,34 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Entity
-@Table(name="products")
-public class Product {
+@Table(name="order_items")
+public class OrderItem {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="product_id")
-    private Long productId;
+    @Column(name="order_item_id")
+    private Long orderItemId;
 
     @NotNull
-    @Size(min=2, max=256)
-    private String title;
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="product_id")
+    private Product product;
 
     @NotNull
-    @Size(min=2, max=512)
-    private String description;
+    private int quantity;
 
+    @NotNull
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="category_id")
-    private Category category;
-
-    @NotNull
-    private double price;
-
-    @NotNull
-    private String currency;
-
-    private int stock;
-
-    private String manufacturer;
+    @JoinColumn(name="order_id")
+    private Order order;
 }
