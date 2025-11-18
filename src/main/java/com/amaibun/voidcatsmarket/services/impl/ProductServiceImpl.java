@@ -2,10 +2,13 @@ package com.amaibun.voidcatsmarket.services.impl;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.amaibun.voidcatsmarket.dtos.ProductDTO;
+import com.amaibun.voidcatsmarket.mappers.ProductMapper;
 import com.amaibun.voidcatsmarket.models.Product;
 import com.amaibun.voidcatsmarket.repositories.ProductRepository;
 import com.amaibun.voidcatsmarket.services.ProductService;
@@ -17,14 +20,19 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private ProductMapper productMapper;
+
     @Override
-    public Product createProduct(Product product) {
-        return productRepository.save(product);
+    public ProductDTO createProduct(ProductDTO product) {
+        return productMapper.productToProductDTO(productRepository.save(
+            productMapper.productDTOToProduct(product)
+        ));
     }
 
     @Override
-    public Product getProduct(String productId) {
-        Product product = productRepository.findById(productId).get();
+    public ProductDTO getProduct(Long productId) {
+        ProductDTO product = productMapper.productToProductDTO(productRepository.findById(productId).get());
         if (Objects.isNull(product)) {
             throw new EntityNotFoundException("Product with id " + productId + " was not found.");
         }
@@ -32,8 +40,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(String productId, Product product) {
-        Product existingProduct = getProduct(productId);
+    public ProductDTO updateProduct(Long productId, ProductDTO product) {
+        ProductDTO existingProduct = getProduct(productId);
 
         existingProduct.setTitle(product.getTitle());
         existingProduct.setDescription(product.getDescription());
@@ -43,11 +51,13 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setStock(product.getStock());
         existingProduct.setManufacturer(product.getManufacturer());
 
-        return productRepository.save(existingProduct);
+        return productMapper.productToProductDTO(productRepository.save(
+            productMapper.productDTOToProduct(existingProduct)
+        ));
     }
 
     @Override
-    public void deleteProduct(String productId) {
+    public void deleteProduct(Long productId) {
         Product existingProduct = productRepository.findById(productId).get();
         if (!Objects.isNull(existingProduct)) {
             productRepository.delete(existingProduct);
@@ -55,7 +65,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductDTO> getAllProducts() {
+        List<Product> products = productRepository.findAll();
+        List<ProductDTO> productDtos = products.stream()
+                                               .map(product -> productMapper.productToProductDTO(product))
+                                               .collect(Collectors.toList());
+
+        return productDtos;
     }
 }

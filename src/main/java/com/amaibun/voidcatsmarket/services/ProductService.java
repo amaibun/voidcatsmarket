@@ -2,16 +2,16 @@ package com.amaibun.voidcatsmarket.services;
 
 import java.util.List;
 
-import com.amaibun.voidcatsmarket.models.Product;
+import com.amaibun.voidcatsmarket.dtos.ProductDTO;
 
 public interface ProductService {
-    public Product createProduct(Product product);
+    public ProductDTO createProduct(ProductDTO product);
 
-    public Product getProduct(String productId);
+    public ProductDTO getProduct(Long productId);
 
-    public Product updateProduct(String productId, Product product);
+    public ProductDTO updateProduct(Long productId, ProductDTO product);
 
-    public void deleteProduct(String productId);
+    public void deleteProduct(Long productId);
 
-    public List<Product> getAllProducts();
+    public List<ProductDTO> getAllProducts();
 }
