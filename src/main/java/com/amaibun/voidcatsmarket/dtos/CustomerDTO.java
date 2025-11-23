@@ -13,5 +13,6 @@ public class CustomerDTO {
     private Long customerId;
     private String name;
     private String email;
-    private List<OrderDTO> orders;
+    private String phoneNumber;
+    private List<Long> orderIds;
 }

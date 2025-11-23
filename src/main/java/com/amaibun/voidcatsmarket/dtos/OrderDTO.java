@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class OrderDTO {
     private Long orderId;
-    private CustomerDTO customer;
-    private List<OrderItemDTO> items;
+    private Long customerId;
+    private List<Long> itemIds;
     private String status;
 }
