@@ -7,10 +7,11 @@ import com.amaibun.voidcatsmarket.dtos.CategoryDTO;
 import com.amaibun.voidcatsmarket.models.Category;
 
 @Mapper(componentModel="spring")
-public interface CategoryMapper {
+public abstract class CategoryMapper {
     @Mapping(source = "categoryId", target = "categoryId")
-    CategoryDTO categoryToCategoryDTO(Category category);
+    public abstract CategoryDTO categoryToCategoryDTO(Category category);
 
+    // Don't know how to deal with ommited fields. Will implement this mapper later
     @Mapping(source = "categoryId", target = "categoryId")
-    Category categoryDTOtoCategory(CategoryDTO categoryDto);
+    public abstract Category categoryDTOtoCategory(CategoryDTO categoryDto);
 }
