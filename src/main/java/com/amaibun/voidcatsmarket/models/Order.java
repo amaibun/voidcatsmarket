@@ -1,7 +1,5 @@
 package com.amaibun.voidcatsmarket.models;
 
-import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,22 +20,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="orders")
+@Table(name = "orders")
 public class Order {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="order_id")
-    private Long orderId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "order_id")
+  private Long orderId;
 
-    @NotNull
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="customer_id")
-    private Customer customer;
+  @NotNull
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "customer_id")
+  private Customer customer;
 
-    @NotNull
-    @OneToMany(mappedBy="order", orphanRemoval=true)
-    private List<OrderItem> items;
+  @NotNull
+  @OneToMany(mappedBy = "order", orphanRemoval = true)
+  private List<OrderItem> items;
 
-    @NotNull
-    private String status = "pending";
+  @NotNull private String status = "pending";
 }

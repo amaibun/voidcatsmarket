@@ -19,23 +19,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="order_items")
+@Table(name = "order_items")
 public class OrderItem {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="order_item_id")
-    private Long orderItemId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "order_item_id")
+  private Long orderItemId;
 
-    @NotNull
-    @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="product_id")
-    private Product product;
+  @NotNull
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "product_id")
+  private Product product;
 
-    @NotNull
-    private int quantity;
+  @NotNull private int quantity;
 
-    @NotNull
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="order_id")
-    private Order order;
+  @NotNull
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "order_id")
+  private Order order;
 }

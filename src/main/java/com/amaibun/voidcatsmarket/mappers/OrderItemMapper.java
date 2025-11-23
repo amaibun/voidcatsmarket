@@ -14,41 +14,44 @@ import com.amaibun.voidcatsmarket.repositories.ProductRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
-@Mapper(componentModel="spring")
+@Mapper(componentModel = "spring")
 public abstract class OrderItemMapper {
-    @Autowired
-    ProductRepository productRepository;
-    
-    @Autowired
-    OrderRepository orderRepository;
+  @Autowired ProductRepository productRepository;
 
-    @Mapping(source="product", target="productId", qualifiedByName="mapProductToProductId")
-    @Mapping(source="order", target="orderId", qualifiedByName="mapOrderToOrderId")
-    public abstract OrderItemDTO orderItemToOrderItemDTO(OrderItem orderItem);
+  @Autowired OrderRepository orderRepository;
 
-    @Mapping(source="productId", target="product", qualifiedByName="mapProductIdToProduct")
-    @Mapping(source="orderId", target="order", qualifiedByName="mapOrderIdToOrder")
-    public abstract OrderItem orderItemDTOToOrderItem(OrderItemDTO orderItemDto);
+  @Mapping(source = "product", target = "productId", qualifiedByName = "mapProductToProductId")
+  @Mapping(source = "order", target = "orderId", qualifiedByName = "mapOrderToOrderId")
+  public abstract OrderItemDTO orderItemToOrderItemDTO(OrderItem orderItem);
 
-    @Named("mapProductToProductId")
-    public Long mapProductToProductId(Product product) {
-        return product.getProductId();
-    }
+  @Mapping(source = "productId", target = "product", qualifiedByName = "mapProductIdToProduct")
+  @Mapping(source = "orderId", target = "order", qualifiedByName = "mapOrderIdToOrder")
+  public abstract OrderItem orderItemDTOToOrderItem(OrderItemDTO orderItemDto);
 
-    @Named("mapOrderToOrderId")
-    public Long mapOrderToOrderId(Order order) {
-        return order.getOrderId();
-    }
+  @Named("mapProductToProductId")
+  public Long mapProductToProductId(Product product) {
+    return product.getProductId();
+  }
 
-    @Named("mapProductIdToProduct")
-    public Product mapProductIdToProduct(Long productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Product with id " + productId + " was not found"));
-    }
+  @Named("mapOrderToOrderId")
+  public Long mapOrderToOrderId(Order order) {
+    return order.getOrderId();
+  }
 
-    @Named("mapOrderIdToOrder")
-    public Order mapOrderIdToOrder(Long orderId) {
-        return orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("Order with id " + orderId + " was not found"));
-    }
+  @Named("mapProductIdToProduct")
+  public Product mapProductIdToProduct(Long productId) {
+    return productRepository
+        .findById(productId)
+        .orElseThrow(
+            () -> new EntityNotFoundException("Product with id " + productId + " was not found"));
+  }
+
+  @Named("mapOrderIdToOrder")
+  public Order mapOrderIdToOrder(Long orderId) {
+    return orderRepository
+        .findById(orderId)
+        .orElseThrow(
+            () -> new EntityNotFoundException("Order with id " + orderId + " was not found")
+        );
+  }
 }

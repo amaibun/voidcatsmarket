@@ -19,32 +19,30 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="products")
+@Table(name = "products")
 public class Product {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="product_id")
-    private Long productId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "product_id")
+  private Long productId;
 
-    @NotNull
-    @Size(min=2, max=256)
-    private String title;
+  @NotNull
+  @Size(min = 2, max = 256)
+  private String title;
 
-    @NotNull
-    @Size(min=2, max=512)
-    private String description;
+  @NotNull
+  @Size(min = 2, max = 512)
+  private String description;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="category_id")
-    private Category category;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "category_id")
+  private Category category;
 
-    @NotNull
-    private double price;
+  @NotNull private double price;
 
-    @NotNull
-    private String currency;
+  @NotNull private String currency;
 
-    private int stock;
+  private int stock;
 
-    private String manufacturer;
+  private String manufacturer;
 }

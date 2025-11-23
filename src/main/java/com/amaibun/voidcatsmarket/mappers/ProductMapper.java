@@ -12,25 +12,27 @@ import com.amaibun.voidcatsmarket.repositories.CategoryRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
-@Mapper(componentModel="spring")
+@Mapper(componentModel = "spring")
 public abstract class ProductMapper {
-    @Autowired
-    private CategoryRepository categoryRepository;
+  @Autowired private CategoryRepository categoryRepository;
 
-    @Mapping(source = "category", target = "categoryId", qualifiedByName="mapCategoryToCategoryId")
-    public abstract ProductDTO productToProductDTO(Product product);
+  @Mapping(source = "category", target = "categoryId", qualifiedByName = "mapCategoryToCategoryId")
+  public abstract ProductDTO productToProductDTO(Product product);
 
-    @Mapping(source = "categoryId", target = "category", qualifiedByName="mapCategoryIdToCategory")
-    public abstract Product productDTOToProduct(ProductDTO productDto);
+  @Mapping(source = "categoryId", target = "category", qualifiedByName = "mapCategoryIdToCategory")
+  public abstract Product productDTOToProduct(ProductDTO productDto);
 
-    @Named("mapCategoryToCategoryId")
-    Long mapCategoryToCategoryId(Category category) {
-        return category.getCategoryId();
-    }
+  @Named("mapCategoryToCategoryId")
+  Long mapCategoryToCategoryId(Category category) {
+    return category.getCategoryId();
+  }
 
-    @Named("mapCategoryIdToCategory")
-    Category mapCategoryIdToCategory(Long categoryId) {
-        return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new EntityNotFoundException("Category with id " + categoryId + " was not found"));
-    }
+  @Named("mapCategoryIdToCategory")
+  Category mapCategoryIdToCategory(Long categoryId) {
+    return categoryRepository
+        .findById(categoryId)
+        .orElseThrow(
+            () -> new EntityNotFoundException("Category with id " + categoryId + " was not found")
+        );
+  }
 }
