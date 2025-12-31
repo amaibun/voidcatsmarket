@@ -4,8 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class VoidcatsmarketApplicationTests {
+class VoidcatsmarketApplicationTest {
 
-  @Test
-  void contextLoads() {}
+    @Test
+    void main_runs() {
+        VoidcatsmarketApplication.main(new String[] {});
+    }
 }

@@ -19,9 +19,25 @@ configurations {
 	}
 }
 
+ext {
+    // Minimal Coverage
+    minimumCoveragePerFile = 0.8
+    filesExcludedFromCoverage = [
+            "**/*Application.*",
+            "**/config/*Configuration.*",
+			"**/mappers/**",
+			"**/exceptions/**",
+			"**/validators/**"
+
+    ]
+}
+
 repositories {
 	mavenCentral()
 }
+
+apply from: "${rootProject.projectDir}/gradle/test.gradle"
+apply from: "${rootProject.projectDir}/gradle/jacoco.gradle"
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -39,10 +55,4 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
-}
-
-task hello(dependsOn:build) {
-	doLast {
-		println "Hello"
-	}
 }
