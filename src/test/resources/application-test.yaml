@@ -14,3 +14,8 @@ spring:
   h2:
     console:
       enabled: true
+feature:
+  cosmocats:
+    enabled: true
+  kittyproducts:
+    enabled: false
