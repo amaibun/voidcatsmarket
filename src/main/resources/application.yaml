@@ -9,7 +9,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-
+feature:
+  toggles:
+    cosmocats:
+      enabled: true
+    kittyproducts:
+      enabled: false
 server:
   port: 8080
 springdoc:
