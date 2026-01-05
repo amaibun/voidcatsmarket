@@ -27,8 +27,10 @@ ext {
             "**/config/*Configuration.*",
 			"**/mappers/**",
 			"**/exceptions/**",
-			"**/validators/**"
-
+			"**/validators/**",
+			"**/configs/**",
+			"**/toggle/**",
+			"*/CosmoCatService.java",
     ]
 }
 
