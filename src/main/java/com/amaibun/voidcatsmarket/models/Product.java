@@ -1,5 +1,7 @@
 package com.amaibun.voidcatsmarket.models;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -38,7 +40,7 @@ public class Product {
   @JoinColumn(name = "category_id")
   private Category category;
 
-  @NotNull private double price;
+  @NotNull private BigDecimal price;
 
   @NotNull private String currency;
 
