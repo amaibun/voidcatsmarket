@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003
+      author: you
+      changes:
+
+        - createIndex:
+            tableName: products
+            indexName: idx_product_title
+            columns:
+              - column:
+                  name: title
+
+        - createIndex:
+            tableName: customers
+            indexName: idx_customer_email
+            columns:
+              - column:
+                  name: email
