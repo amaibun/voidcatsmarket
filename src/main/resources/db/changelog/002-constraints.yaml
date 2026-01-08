@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002
+      author: you
+      changes:
+
+        - addUniqueConstraint:
+            tableName: categories
+            columnNames: name
+            constraintName: uq_category_name
+
+        - addUniqueConstraint:
+            tableName: products
+            columnNames: title, category_id
+            constraintName: uq_product_title_category
+
+        - addUniqueConstraint:
+            tableName: customers
+            columnNames: email
+            constraintName: uq_customer_email
+
+        - addUniqueConstraint:
+            tableName: orders
+            columnNames: order_number
+            constraintName: uq_order_number
+
+        - addForeignKeyConstraint:
+            baseTableName: products
+            baseColumnNames: category_id
+            referencedTableName: categories
+            referencedColumnNames: category_id
+            constraintName: fk_product_category
+
+        - addForeignKeyConstraint:
+            baseTableName: orders
+            baseColumnNames: customer_id
+            referencedTableName: customers
+            referencedColumnNames: customer_id
+            constraintName: fk_order_customer
+
+        - addForeignKeyConstraint:
+            baseTableName: order_items
+            baseColumnNames: order_id
+            referencedTableName: orders
+            referencedColumnNames: order_id
+            constraintName: fk_order_item_order
+
+        - addForeignKeyConstraint:
+            baseTableName: order_items
+            baseColumnNames: product_id
+            referencedTableName: products
+            referencedColumnNames: product_id
+            constraintName: fk_order_item_product
