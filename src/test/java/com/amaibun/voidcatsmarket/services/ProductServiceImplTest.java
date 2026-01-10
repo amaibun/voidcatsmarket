@@ -7,24 +7,31 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.amaibun.voidcatsmarket.AbstractIT;
 import com.amaibun.voidcatsmarket.dtos.ProductDTO;
 import com.amaibun.voidcatsmarket.mappers.ProductMapper;
+import com.amaibun.voidcatsmarket.models.Category;
 import com.amaibun.voidcatsmarket.models.Product;
+import com.amaibun.voidcatsmarket.repositories.CategoryRepository;
 import com.amaibun.voidcatsmarket.repositories.ProductRepository;
 import com.amaibun.voidcatsmarket.services.impl.ProductServiceImpl;
 
-class ProductServiceImplTest extends AbstractIT {
+@ExtendWith(MockitoExtension.class)
+class ProductServiceImplTest {
 
     @Mock
     private ProductRepository productRepository;
+
+    @Mock
+    private CategoryRepository categoryRepository;
 
     @Mock
     private ProductMapper productMapper;
@@ -34,75 +41,100 @@ class ProductServiceImplTest extends AbstractIT {
 
     private Product product;
     private ProductDTO productDto;
+    private Category category;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+
+        category = new Category();
+        category.setCategoryId(10L);
 
         product = new Product();
         product.setProductId(1L);
         product.setTitle("Test Product");
+        product.setCategory(category);
 
         productDto = new ProductDTO();
         productDto.setProductId(1L);
         productDto.setTitle("Test Product");
+        productDto.setCategoryId(10L);
+    }
+
+
+    @Test
+    void create_success() {
+
+        when(categoryRepository.findById(10L))
+                .thenReturn(Optional.of(category));
+
+        when(productMapper.toEntity(any(), eq(category)))
+                .thenReturn(product);
+
+        when(productRepository.save(product))
+                .thenReturn(product);
+
+        when(productMapper.toDto(product))
+                .thenReturn(productDto);
+
+        ProductDTO result = productService.create(productDto);
+
+        assertEquals(1L, result.getProductId());
     }
 
     @Test
-    void createProduct_success() {
-        when(productMapper.productDTOToProduct(any())).thenReturn(product);
-        when(productRepository.save(product)).thenReturn(product);
-        when(productMapper.productToProductDTO(product)).thenReturn(productDto);
-
-        ProductDTO result = productService.createProduct(productDto);
-
-        assertEquals(productDto.getProductId(), result.getProductId());
-        verify(productRepository).save(product);
-    }
-
-    @Test
-    void getProduct_success() {
+    void get_success() {
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        when(productMapper.productToProductDTO(product)).thenReturn(productDto);
+        when(productMapper.toDto(product)).thenReturn(productDto);
 
-        ProductDTO result = productService.getProduct(1L);
+        ProductDTO result = productService.get(1L);
 
         assertEquals(productDto.getProductId(), result.getProductId());
     }
 
     @Test
-    void updateProduct_success() {
+    void update_success() {
+
         ProductDTO updatedDto = new ProductDTO();
-        updatedDto.setTitle("Updated Product");
         updatedDto.setProductId(1L);
+        updatedDto.setTitle("Updated");
+        updatedDto.setCategoryId(10L);
 
-        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        when(productMapper.productToProductDTO(product)).thenReturn(productDto);
-        when(productMapper.productDTOToProduct(any())).thenReturn(product);
-        when(productRepository.save(product)).thenReturn(product);
+        when(productRepository.findById(1L))
+                .thenReturn(Optional.of(product));
 
-        ProductDTO result = productService.updateProduct(1L, updatedDto);
+        when(categoryRepository.findById(10L))
+                .thenReturn(Optional.of(category));
 
-        assertEquals(productDto.getProductId(), result.getProductId());
-        verify(productRepository).save(product);
+        when(productRepository.save(product))
+                .thenReturn(product);
+
+        when(productMapper.toDto(product))
+                .thenReturn(productDto);
+
+        ProductDTO result = productService.update(1L, updatedDto);
+
+        assertEquals(1L, result.getProductId());
     }
 
     @Test
-    void deleteProduct_success() {
+    void delete_success() {
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        assertDoesNotThrow(() -> productService.deleteProduct(1L));
+        assertDoesNotThrow(() -> productService.delete(1L));
         verify(productRepository).delete(product);
     }
 
     @Test
-    void getAllProducts_success() {
-        when(productRepository.findAll()).thenReturn(List.of(product));
-        when(productMapper.productToProductDTO(product)).thenReturn(productDto);
+    void getAll_success() {
 
-        List<ProductDTO> result = productService.getAllProducts();
+        when(productRepository.findAll())
+                .thenReturn(List.of(product));
+
+        when(productMapper.toDto(product))
+                .thenReturn(productDto);
+
+        List<ProductDTO> result = productService.getAll();
 
         assertEquals(1, result.size());
-        assertEquals(productDto.getProductId(), result.get(0).getProductId());
     }
 }

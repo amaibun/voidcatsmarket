@@ -1,5 +1,7 @@
 package com.amaibun.voidcatsmarket.controllers;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.Test;
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,6 +31,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@ActiveProfiles("test")
 class ProductControllerIT extends AbstractIT {
 
     @Autowired
@@ -52,7 +56,7 @@ class ProductControllerIT extends AbstractIT {
         Product product = new Product();
         product.setTitle("Test Product");
         product.setDescription("Test Description");
-        product.setPrice(10.0);
+        product.setPrice(BigDecimal.valueOf(10.0));
         product.setCurrency("USD");
         product.setStock(5);
         product.setCategory(category);
@@ -63,7 +67,7 @@ class ProductControllerIT extends AbstractIT {
         ProductDTO dto = new ProductDTO();
         dto.setTitle("Test Product");
         dto.setDescription("Test Description");
-        dto.setPrice(20.0);
+        dto.setPrice(BigDecimal.valueOf(20.0));
         dto.setCurrency("USD");
         dto.setStock(10);
         dto.setCategoryId(category.getCategoryId());
@@ -71,7 +75,7 @@ class ProductControllerIT extends AbstractIT {
     }
 
     @Test
-    void getAllProducts_returns200_andProducts() throws Exception {
+    void getAll_returns200_andProducts() throws Exception {
         Category category = createCategory();
         productRepository.save(createValidProduct(category));
 
@@ -82,7 +86,7 @@ class ProductControllerIT extends AbstractIT {
     }
 
     @Test
-    void getProductById_returns200() throws Exception {
+    void getById_returns200() throws Exception {
         Category category = createCategory();
         Product saved = productRepository.save(createValidProduct(category));
 
@@ -93,7 +97,7 @@ class ProductControllerIT extends AbstractIT {
     }
 
     @Test
-    void createProduct_returns201_andPersists() throws Exception {
+    void create_returns201_andPersists() throws Exception {
         Category category = createCategory();
         ProductDTO dto = createValidProductDTO(category);
 
@@ -107,7 +111,7 @@ class ProductControllerIT extends AbstractIT {
     }
 
     @Test
-    void updateProduct_returns200_andUpdates() throws Exception {
+    void update_returns200_andUpdates() throws Exception {
         Category category = createCategory();
         Product saved = productRepository.save(createValidProduct(category));
 
@@ -122,7 +126,7 @@ class ProductControllerIT extends AbstractIT {
     }
 
     @Test
-    void deleteProduct_returns200_andDeletes() throws Exception {
+    void delete_returns200_andDeletes() throws Exception {
         Category category = createCategory();
         Product saved = productRepository.save(createValidProduct(category));
 
