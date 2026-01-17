@@ -92,10 +92,8 @@ class ProductServiceImplTest {
 
     @Test
     void create_categoryNotFound() {
-        // Test for category not found scenario
         when(categoryRepository.findById(10L)).thenReturn(Optional.empty());
 
-        // Expecting an exception to be thrown
         assertThrows(EntityNotFoundException.class, () -> productService.create(productDto));
     }
 
@@ -112,10 +110,8 @@ class ProductServiceImplTest {
 
     @Test
     void get_productNotFound() {
-        // Test for product not found scenario
         when(productRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Expecting an exception to be thrown
         assertThrows(EntityNotFoundException.class, () -> productService.get(1L));
     }
 
@@ -145,7 +141,6 @@ class ProductServiceImplTest {
 
     @Test
     void update_productNotFound() {
-        // Test for product not found scenario
         ProductDTO updatedDto = new ProductDTO();
         updatedDto.setProductId(1L);
         updatedDto.setTitle("Updated");
@@ -154,18 +149,15 @@ class ProductServiceImplTest {
 
         when(productRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Expecting an exception to be thrown
         assertThrows(EntityNotFoundException.class, () -> productService.update(1L, updatedDto));
     }
 
     @Test
     void delete_success() {
-        // No need to mock findById since deleteById directly uses the ID
         doNothing().when(productRepository).deleteById(1L);
 
         assertDoesNotThrow(() -> productService.delete(1L));
 
-        // Verify deleteById(1L) was called
         verify(productRepository).deleteById(1L);
     }
 
@@ -183,7 +175,6 @@ class ProductServiceImplTest {
 
     @Test
     void getAll_emptyList() {
-        // Test for when there are no products
         when(productRepository.findAll()).thenReturn(Collections.emptyList());
 
         List<ProductDTO> result = productService.getAll();
