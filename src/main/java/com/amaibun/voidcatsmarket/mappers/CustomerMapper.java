@@ -1,57 +1,34 @@
 package com.amaibun.voidcatsmarket.mappers;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import com.amaibun.voidcatsmarket.dtos.CustomerDTO;
 import com.amaibun.voidcatsmarket.models.Customer;
 import com.amaibun.voidcatsmarket.models.Order;
-import com.amaibun.voidcatsmarket.repositories.OrderRepository;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Mapper(componentModel = "spring")
-public abstract class CustomerMapper {
-  @Autowired private OrderRepository orderRepository;
+public interface CustomerMapper {
 
-  @Mapping(source = "orders", target = "orderIds", qualifiedByName = "mapOrderToOrderId")
-  public abstract CustomerDTO customerToCustomerDTO(Customer customer);
+    @Mapping(source = "orders", target = "orderIds")
+    CustomerDTO toDto(Customer customer);
 
-  @Mapping(source = "orderIds", target = "orders", qualifiedByName = "mapOrderIdToOrder")
-  public abstract Customer customerDTOToCustomer(CustomerDTO customerDto);
+    @Mapping(target = "orders", ignore = true)
+    Customer toEntity(CustomerDTO dto);
 
-  @Named("mapOrderToOrderId")
-  public List<Long> mapOrderToOrderId(List<Order> orders) {
-    ArrayList<Long> orderIds = new ArrayList<>();
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "orders", ignore = true)
+    void updateEntity(CustomerDTO dto, @MappingTarget Customer customer);
 
-    for (Order order : orders) {
-      orderIds.add(order.getOrderId());
+    default List<Long> mapOrdersToIds(List<Order> orders) {
+        if (orders == null) return List.of();
+        return orders.stream()
+                .map(Order::getOrderId)
+                .toList();
     }
-
-    return orderIds;
-  }
-
-  // Will try to reduce code duplication among mappers in the future
-  @Named("mapOrderIdToOrder")
-  public List<Order> mapOrderIdToOrder(List<Long> orderIds) {
-    ArrayList<Order> orders = new ArrayList<>();
-
-    for (Long orderId : orderIds) {
-      orders.add(
-          orderRepository
-              .findById(orderId)
-              .orElseThrow(
-                  () ->
-                      new EntityNotFoundException("Order with id " + orderId + " was not found")
-                    )
-                );
-    }
-
-    return orders;
-  }
 }

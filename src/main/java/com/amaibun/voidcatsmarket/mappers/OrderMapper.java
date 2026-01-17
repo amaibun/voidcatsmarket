@@ -1,76 +1,37 @@
 package com.amaibun.voidcatsmarket.mappers;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import com.amaibun.voidcatsmarket.dtos.OrderDTO;
-import com.amaibun.voidcatsmarket.models.Customer;
 import com.amaibun.voidcatsmarket.models.Order;
 import com.amaibun.voidcatsmarket.models.OrderItem;
-import com.amaibun.voidcatsmarket.repositories.CustomerRepository;
-import com.amaibun.voidcatsmarket.repositories.OrderItemRepository;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Mapper(componentModel = "spring")
-public abstract class OrderMapper {
-  @Autowired private CustomerRepository customerRepository;
+public interface OrderMapper {
 
-  @Autowired private OrderItemRepository orderItemRepository;
+    @Mapping(source = "customer.customerId", target = "customerId")
+    @Mapping(source = "items", target = "itemIds")
+    OrderDTO toDto(Order order);
 
-  @Mapping(source = "customer", target = "customerId", qualifiedByName = "mapCustomerToCustomerId")
-  @Mapping(source = "items", target = "itemIds", qualifiedByName = "mapOrderItemToOrderItemId")
-  public abstract OrderDTO orderToOrderDTO(Order order);
+    @Mapping(target = "customer", ignore = true)
+    @Mapping(target = "items", ignore = true)
+    Order toEntity(OrderDTO dto);
 
-  @Mapping(source = "customerId", target = "customer", qualifiedByName = "mapCustomerIdToCustomer")
-  @Mapping(source = "itemIds", target = "items", qualifiedByName = "mapOrderItemIdToOrderItem")
-  public abstract Order orderDTOToOrder(OrderDTO orderDto);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "customer", ignore = true)
+    @Mapping(target = "items", ignore = true)
+    void updateEntity(OrderDTO dto, @MappingTarget Order order);
 
-  @Named("mapCustomerToCustomerId")
-  public Long mapCustomerToCustomerId(Customer customer) {
-    return customer.getCustomerId();
-  }
-
-  @Named("mapCustomerIdToCustomer")
-  public Customer mapCustomerIdToCustomer(Long customerId) {
-    return customerRepository
-        .findById(customerId)
-        .orElseThrow(
-            () -> new EntityNotFoundException("Customer with id " + customerId + " was not found")
-        );
-  }
-
-  @Named("mapOrderItemToOrderItemId")
-  public List<Long> mapOrderItemToOrderItemId(List<OrderItem> orderItems) {
-    List<Long> orderItemIds = new ArrayList<>();
-    for (OrderItem orderItem : orderItems) {
-      orderItemIds.add(orderItem.getOrderItemId());
+    default List<Long> mapItemsToIds(List<OrderItem> items) {
+        if (items == null) return List.of();
+        return items.stream()
+                .map(OrderItem::getOrderItemId)
+                .toList();
     }
-
-    return orderItemIds;
-  }
-
-  @Named("mapOrderItemIdToOrderItem")
-  public List<OrderItem> mapOrderItemIdToOrderItem(List<Long> orderItemIds) {
-    List<OrderItem> orderItems = new ArrayList<>();
-    for (Long orderItemId : orderItemIds) {
-      orderItems.add(
-          orderItemRepository
-              .findById(orderItemId)
-              .orElseThrow(
-                  () ->
-                      new EntityNotFoundException(
-                          "Order item with id " + orderItemId + " was not found"
-                        )
-                    )
-                );
-    }
-
-    return orderItems;
-  }
 }
